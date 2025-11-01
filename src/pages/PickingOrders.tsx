@@ -29,12 +29,15 @@ interface Item {
 interface Batch {
   id: string;
   batch_code: string;
+  quantity?: number;
   lot?: {
     id: string;
     code: string;
     rack?: {
       code: string;
-      zone?: { name: string };
+      zone?: {
+        name: string;
+      };
     };
   };
 }
@@ -241,7 +244,7 @@ export default function PickingOrders() {
     // Update batch quantity
     await supabase
       .from('item_batches')
-      .update({ quantity: batch.quantity - selectedOrderItem.quantity })
+      .update({ quantity: (batch.quantity || 0) - selectedOrderItem.quantity })
       .eq('id', selectedBatchId);
 
     // Update lot current_load
